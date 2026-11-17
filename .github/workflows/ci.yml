@@ -12,16 +12,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  secrets:
-    name: gitleaks
-    uses: $/.github/workflows/gitleaks.yml
+  secret-scan:
+    name: Secret scan
+    uses: $/.github/workflows/secret-scan.yml
     permissions:
       contents: read
 
   # The same scan through the runs-on-json input, so every pull request exercises both runner paths.
-  gitleaks-json:
-    name: gitleaks (runs-on-json)
-    uses: $/.github/workflows/gitleaks.yml
+  secret-scan-json:
+    name: Secret scan (runs-on-json)
+    uses: $/.github/workflows/secret-scan.yml
     with:
       runs-on-json: '["ubuntu-latest"]'
     permissions:

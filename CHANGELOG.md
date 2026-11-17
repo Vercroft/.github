@@ -3,6 +3,20 @@
 All notable changes to this repository are listed here, newest first, in the format of
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.0]
+
+### Changed (breaking)
+
+- The workflow is now `.github/workflows/secret-scan.yml` (it was `gitleaks.yml`), and its job is named `full history`
+  (it was `gitleaks`), so a caller's check is named for what it checks, not for the tool. A caller changes its `uses:`
+  path to `.github/workflows/secret-scan.yml`, names its calling job `Secret scan`, and swaps its required check for
+  `Secret scan / full history`. The inputs and the scan itself are unchanged.
+
+### Added
+
+- `.gitleaks.toml` carries `github-app-installation-token-stateless`, copied from engineering-practices, for GitHub App
+  installation tokens in the stateless `ghs_APPID_JWT` form.
+
 ## [1.1.0]
 
 ### Added

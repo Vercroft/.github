@@ -9,7 +9,7 @@ Vercroft's shared repository: the reusable full-history secret scan every reposi
 
 ```mermaid
 flowchart LR
-  P["pull request"] --> C["CI: gitleaks, zizmor, CodeQL, links"]
+  P["pull request"] --> C["CI: secret scan, zizmor, CodeQL, links"]
   C --> R["maintainer review and merge"]
   R --> T["release tag"]
   T --> U["each repository's Dependabot moves its pin"]
@@ -17,7 +17,7 @@ flowchart LR
 
 ## Quick start
 
-Every repository copies this file as `.github/workflows/gitleaks.yml` and keeps its own `.gitleaks.toml` at its root.
+Every repository copies this file as `.github/workflows/secret-scan.yml` and keeps its own `.gitleaks.toml` at its root.
 Nothing else is needed. Dependabot keeps the commit SHA and the version comment up to date.
 
 ```yaml
@@ -29,16 +29,19 @@ on:
 permissions: {}
 
 concurrency:
-  group: gitleaks-${{ github.event.pull_request.number }}
+  group: secret-scan-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
-  gitleaks:
-    name: gitleaks
-    uses: Vercroft/.github/.github/workflows/gitleaks.yml@<commit SHA> # <version tag>
+  secret-scan:
+    name: Secret scan
+    uses: Vercroft/.github/.github/workflows/secret-scan.yml@<commit SHA> # <version tag>
     permissions:
       contents: read
 ```
+
+GitHub reports the check as `Secret scan / full history`, and that is the required check. The check name and the file
+path are this workflow's interface, so changing either is a major version.
 
 A private repository may add `with:` and `runner: <its runner value>` to the job; the default is `ubuntu-latest`.
 To pin a runner group, pass the whole `runs-on` value instead: `runs-on-json: '{"group":"my-group","labels":["self-hosted"]}'`.
