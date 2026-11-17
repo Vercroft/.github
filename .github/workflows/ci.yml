@@ -18,6 +18,15 @@ jobs:
     permissions:
       contents: read
 
+  # The same scan through the runs-on-json input, so every pull request exercises both runner paths.
+  gitleaks-json:
+    name: gitleaks (runs-on-json)
+    uses: $/.github/workflows/gitleaks.yml
+    with:
+      runs-on-json: '["ubuntu-latest"]'
+    permissions:
+      contents: read
+
   workflows:
     name: zizmor
     runs-on: ubuntu-latest

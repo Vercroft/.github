@@ -3,7 +3,14 @@
 All notable changes to this repository are listed here, newest first, in the format of
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [1.0.1]
+## [1.1.0]
+
+### Added
+
+- `gitleaks.yml` takes an optional `runs-on-json` input: a full `runs-on` value as JSON, such as a runner group with
+  labels, used instead of `runner` when set.
+
+## [1.0.1] - 2026-11-17
 
 ### Fixed
 
