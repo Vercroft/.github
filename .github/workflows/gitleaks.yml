@@ -26,6 +26,11 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      # Before the action, every time: it downloads gitleaks to the fixed file $TMPDIR/gitleaks.tmp and never deletes
+      # it, so on a runner whose /tmp persists between jobs the next download fails because the file already exists.
+      # On a fresh runner there is no such file and the step does nothing.
+      - name: Remove the gitleaks action's leftover download
+        run: rm -f -- "${TMPDIR:-/tmp}/gitleaks.tmp"
       # The action runs `gitleaks detect --redact` over the full history. Its SARIF report stays on the runner:
       # nothing is uploaded to code scanning.
       - uses: gacts/gitleaks@4fd785dcdaf557fda64e05b0ae033b8f7d82fb81 # v1.3.3
