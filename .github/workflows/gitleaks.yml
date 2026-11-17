@@ -1,0 +1,34 @@
+# The shared full-history secret scan of engineering-practices §7C.6. A repository calls it from its own CI with
+#   uses: Vercroft/.github/.github/workflows/gitleaks.yml@<commit SHA> # <release>
+# and keeps its own .gitleaks.toml at its root. It needs no secrets.
+name: gitleaks
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        description: The runner label to run on; a private repository may pass its own runner switch value.
+        type: string
+        required: false
+        default: ubuntu-latest
+
+permissions: {}
+
+jobs:
+  scan:
+    name: gitleaks
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # The action runs `gitleaks detect --redact` over the full history. Its SARIF report stays on the runner:
+      # nothing is uploaded to code scanning.
+      - uses: gacts/gitleaks@4fd785dcdaf557fda64e05b0ae033b8f7d82fb81 # v1.3.3
+        with:
+          version: 8.30.1
+          config-path: .gitleaks.toml
