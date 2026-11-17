@@ -1,0 +1,6 @@
+# gitleaks' default rules (engineering-practices §7C.6). This repository issues no keys and uses no service keys of
+# its own, so it adds no rule.
+title = "Vercroft .github"
+
+[extend]
+useDefault = true
