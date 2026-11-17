@@ -41,6 +41,7 @@ jobs:
 ```
 
 A private repository may add `with:` and `runner: <its runner value>` to the job; the default is `ubuntu-latest`.
+To pin a runner group, pass the whole `runs-on` value instead: `runs-on-json: '{"group":"my-group","labels":["self-hosted"]}'`.
 
 Working on this repository: install the commit hook with `pre-commit install`.
 
