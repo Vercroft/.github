@@ -1,6 +1,14 @@
 # gitleaks' default rules (engineering-practices §7C.6). This repository issues no keys and uses no service keys of
-# its own, so it adds no rule.
+# its own; it carries only the rule every repository copies from engineering-practices.
 title = "Vercroft .github"
 
 [extend]
 useDefault = true
+
+# GitHub App installation tokens in the stateless ghs_APPID_JWT form (https://github.blog/changelog/2026-10-02-stateless-github-app-installation-tokens-rolled-out/), which the default github-app-token rule misses.
+[[rules]]
+id = "github-app-installation-token-stateless"
+description = "GitHub App installation token, stateless form (ghs_APPID_JWT)"
+regex = '''(ghs_[0-9]+_[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)'''
+secretGroup = 1
+keywords = ["ghs_"]

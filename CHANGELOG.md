@@ -3,6 +3,24 @@
 All notable changes to this repository are listed here, newest first, in the format of
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.0]
+
+### Changed (breaking)
+
+- The workflow is now `.github/workflows/reusable-secret-scan.yml` (it was `gitleaks.yml`), named `Reusable secret
+  scan`; its job is `full-history`, named `Full history` (it was `scan`, named `gitleaks`), and its steps are named.
+  A caller's check is named for what it checks, not for the tool.
+- One input, `runs-on`, the job's `runs-on` value as JSON (default `'"ubuntu-latest"'`), replaces `runner` and
+  `runs-on-json`.
+- A caller changes its `uses:` path to `.github/workflows/reusable-secret-scan.yml`, its job id to `secret-scan` and
+  name to `Secret scan`, its runner value, if any, to `runs-on` as JSON (a label `"ubuntu-latest"` in quotes, or a
+  runner group with labels), and its required check to `Secret scan / Full history`. The scan itself is unchanged.
+
+### Added
+
+- `.gitleaks.toml` carries `github-app-installation-token-stateless`, copied from engineering-practices, for GitHub App
+  installation tokens in the stateless `ghs_APPID_JWT` form.
+
 ## [1.1.0]
 
 ### Added
