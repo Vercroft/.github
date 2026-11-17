@@ -7,10 +7,14 @@ All notable changes to this repository are listed here, newest first, in the for
 
 ### Changed (breaking)
 
-- The workflow is now `.github/workflows/secret-scan.yml` (it was `gitleaks.yml`), and its job is named `full history`
-  (it was `gitleaks`), so a caller's check is named for what it checks, not for the tool. A caller changes its `uses:`
-  path to `.github/workflows/secret-scan.yml`, names its calling job `Secret scan`, and swaps its required check for
-  `Secret scan / full history`. The inputs and the scan itself are unchanged.
+- The workflow is now `.github/workflows/reusable-secret-scan.yml` (it was `gitleaks.yml`), named `Reusable secret
+  scan`; its job is `full-history`, named `Full history` (it was `scan`, named `gitleaks`), and its steps are named.
+  A caller's check is named for what it checks, not for the tool.
+- One input, `runs-on`, the job's `runs-on` value as JSON (default `'"ubuntu-latest"'`), replaces `runner` and
+  `runs-on-json`.
+- A caller changes its `uses:` path to `.github/workflows/reusable-secret-scan.yml`, its job id to `secret-scan` and
+  name to `Secret scan`, its runner value, if any, to `runs-on` as JSON (a label `"ubuntu-latest"` in quotes, or a
+  runner group with labels), and its required check to `Secret scan / Full history`. The scan itself is unchanged.
 
 ### Added
 

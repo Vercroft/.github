@@ -14,16 +14,16 @@ concurrency:
 jobs:
   secret-scan:
     name: Secret scan
-    uses: $/.github/workflows/secret-scan.yml
+    uses: $/.github/workflows/reusable-secret-scan.yml
     permissions:
       contents: read
 
-  # The same scan through the runs-on-json input, so every pull request exercises both runner paths.
-  secret-scan-json:
-    name: Secret scan (runs-on-json)
-    uses: $/.github/workflows/secret-scan.yml
+  # The same scan with an explicit runs-on, so every pull request exercises both paths.
+  secret-scan-runs-on:
+    name: Secret scan (runs-on)
+    uses: $/.github/workflows/reusable-secret-scan.yml
     with:
-      runs-on-json: '["ubuntu-latest"]'
+      runs-on: '["ubuntu-latest"]'
     permissions:
       contents: read
 

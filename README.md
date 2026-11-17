@@ -35,16 +35,16 @@ concurrency:
 jobs:
   secret-scan:
     name: Secret scan
-    uses: Vercroft/.github/.github/workflows/secret-scan.yml@<commit SHA> # <version tag>
+    uses: Vercroft/.github/.github/workflows/reusable-secret-scan.yml@<commit SHA> # <version tag>
     permissions:
       contents: read
 ```
 
-GitHub reports the check as `Secret scan / full history`, and that is the required check. The check name and the file
-path are this workflow's interface, so changing either is a major version.
+GitHub reports the check as `Secret scan / Full history`, and that is the required check. The check name, the file path
+and the inputs are this workflow's interface, so changing any of them is a major version.
 
-A private repository may add `with:` and `runner: <its runner value>` to the job; the default is `ubuntu-latest`.
-To pin a runner group, pass the whole `runs-on` value instead: `runs-on-json: '{"group":"my-group","labels":["self-hosted"]}'`.
+The one input, `runs-on`, is the job's `runs-on` value as JSON (default `'"ubuntu-latest"'`); to pin a runner group,
+add `with:` and `runs-on: '{"group":"my-group","labels":["self-hosted"]}'` to the job.
 
 Working on this repository: install the commit hook with `pre-commit install`.
 
