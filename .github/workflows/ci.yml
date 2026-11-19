@@ -27,19 +27,54 @@ jobs:
     permissions:
       contents: read
 
-  workflows:
-    name: zizmor
+  # Runs every hook in .pre-commit-config.yaml (engineering-practices docs/required-checks.md); a new small check is
+  # a new hook there.
+  repository-checks:
+    name: Repository checks
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+      # Only runs the tools: pinned to a version every pinned package has a wheel for.
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          version: 1.31.1
-          inputs: .github/workflows
-          online-audits: false
-          advanced-security: false
+          python-version: "3.14.10"
+      # gitleaks scans staged changes, and CI has none; the Secret scan checks scan the full history.
+      - name: Run every hook
+        env:
+          SKIP: gitleaks
+        run: |
+          python -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet --require-hashes --only-binary :all: \
+            -r .github/requirements/pre-commit.txt -r .github/requirements/zizmor.txt
+          export PATH="$RUNNER_TEMP/venv/bin:$PATH"
+          pre-commit run --all-files --hook-stage manual --show-diff-on-failure
+
+  # The one CI check the ruleset requires for this file (engineering-practices 4.6). `if: always()` so a failed job
+  # cannot skip it; it fails unless every job it needs passed or was skipped. tests/test_gate_summary.py fails when a
+  # job in this file is missing from `needs`, when the verdict accepts a failure, or when another job gets an `if:`.
+  gate-summary:
+    name: Gate summary
+    if: always()
+    needs: [repository-checks, secret-scan, secret-scan-runs-on]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Require every needed job to have passed or been skipped
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          results = {job: need["result"] for job, need in json.loads(os.environ["NEEDS_JSON"]).items()}
+          for job, result in sorted(results.items()):
+              print(f"{job}: {result}")
+          bad = sorted(f"{job}={result}" for job, result in results.items() if result not in ("success", "skipped"))
+          if not results or bad:
+              sys.exit("not every needed job passed or was skipped: " + (", ".join(bad) or "no jobs"))
+          PY
