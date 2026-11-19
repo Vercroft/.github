@@ -3,6 +3,23 @@
 All notable changes to this repository are listed here, newest first, in the format of
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.0]
+
+### Changed
+
+- `reusable-secret-scan.yml` installs gitleaks 8.30.1 from its release archive, checked against the SHA-256 for Linux
+  x64, instead of through `gacts/gitleaks`, which checked no checksum and cached the binary between runs. Nothing is
+  cached. Any other runner is refused with an error. The scan is gitleaks' own `git` command (which replaced `detect`)
+  over the full history with the caller's `.gitleaks.toml`, redacted; a finding fails the check as before.
+
+### Removed
+
+- The step that removed the gitleaks action's leftover download: the archive now lives in the job's own temporary
+  folder, which the runner empties at the start and end of every job.
+- The SARIF report, which nothing read.
+
+A caller changes only the commit SHA and the version comment.
+
 ## [2.0.0]
 
 ### Changed (breaking)
