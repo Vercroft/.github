@@ -16,3 +16,20 @@ updates:
         applies-to: security-updates
         patterns: ["*"]
     open-pull-requests-limit: 3
+
+  # The hash-pinned CI tools (pre-commit, zizmor).
+  - package-ecosystem: pip
+    directory: /.github/requirements
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      pip-minor-and-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+      pip-security:
+        applies-to: security-updates
+        patterns: ["*"]
+    open-pull-requests-limit: 3
